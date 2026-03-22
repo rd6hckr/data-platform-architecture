@@ -1,3 +1,21 @@
+-- =============================================================================
+-- DDL Script: Bronze Layer Tables
+-- Database:   DataWarehouse
+-- Schema:     bronze
+-- =============================================================================
+-- Description:
+--   Creates all raw ingestion tables for the Bronze layer.
+--   These tables preserve source data as-is from CRM and ERP systems.
+--   No transformations are applied at this stage.
+--
+-- Tables:
+--   CRM: crm_cust_info, crm_prd_info, crm_sales_details
+--   ERP: erp_loc_a101, erp_cu_az12, erp_px_cat_g1v2
+--
+-- Author:  rd6hckr
+-- Created: 2025
+-- =============================================================================
+
 USE DataWarehouse;
 
 CREATE TABLE bronze.crm_cust_info(
