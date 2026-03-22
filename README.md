@@ -1,13 +1,11 @@
 # Data Platform Architecture
 
-> End-to-end data pipeline implementing **Medallion Architecture** (Bronze → Silver → Gold) with data modelling, transformation, and analytics-ready layers.
-
----
+End-to-end data pipeline implementing Medallion Architecture (Bronze → Silver → Gold) with data modelling, transformation, and analytics-ready layers using SQL Server and T-SQL.
 
 ## Architecture Overview
 
-```
-Raw Sources
+\```
+Raw Sources (CSV)
     │
     ▼
 ┌─────────────────────────────────────────────────────────┐
@@ -26,61 +24,53 @@ Raw Sources
 │  GOLD LAYER    │  Business-ready, aggregated models     │
 │                │  Analytics, reporting & BI consumption  │
 └─────────────────────────────────────────────────────────┘
-```
-
----
+\```
 
 ## Repository Structure
 
-```
+\```
 data-platform-architecture/
 │
-├── datasets/          # Source and reference datasets (CSV, JSON, etc.)
+├── datasets/          # Source CSV files (not tracked in git)
 ├── docs/              # Architecture diagrams and technical documentation
-├── scripts/           # Ingestion, transformation and load scripts
-├── tests/             # Unit and integration tests
+├── scripts/           # DDL and stored procedures per layer
+│   ├── init_database.sql   # Database and schema creation
+│   ├── bronze_ddl.sql      # Bronze layer table definitions
+│   └── bronze_load.sql     # Bronze layer load procedure
+├── tests/             # Validation queries
 └── LICENSE            # MIT License
-```
+\```
 
----
+## Prerequisites
+
+- SQL Server 2022 (via Docker)
+- VS Code + SQL Server extension
 
 ## Getting Started
 
-### Prerequisites
-
-- Python 3.9+
-- SQL Server / PostgreSQL (or compatible RDBMS)
-- Git
-
-### Installation
-
-```bash
+\```bash
 git clone https://github.com/rd6hckr/data-platform-architecture.git
 cd data-platform-architecture
-pip install -r requirements.txt
-```
+\```
 
-### Running the Pipeline
+1. Run `scripts/init_database.sql` — creates the `DataWarehouse` database and schemas
+2. Run `scripts/bronze_ddl.sql` — creates bronze layer tables
+3. Place source CSV files in the `datasets/` folder
+4. Run `scripts/bronze_load.sql` — creates the load stored procedure
 
-```bash
-# 1. Ingest raw data into Bronze layer
-python scripts/ingest_bronze.py
+## Running the Pipeline
 
-# 2. Transform and load into Silver layer
-python scripts/transform_silver.py
-
-# 3. Build Gold aggregations
-python scripts/build_gold.py
-```
-
----
+\```sql
+-- Load Bronze layer
+EXEC bronze.load_bronze;
+\```
 
 ## Pipeline Stages
 
 ### Bronze — Raw Ingestion
-- Lands source data with minimal processing
+- Bulk loads CSV files directly into staging tables
 - Preserves original schema and values
-- Timestamped for auditability
+- Full reload on each execution (TRUNCATE + INSERT)
 
 ### Silver — Cleansed & Conformed
 - Removes duplicates and nulls
@@ -92,24 +82,10 @@ python scripts/build_gold.py
 - Optimized for BI tools and reporting
 - Business KPIs and metrics layer
 
----
-
-## Testing
-
-```bash
-pytest tests/
-```
-
-Tests cover schema validation, row count expectations, and transformation logic at each layer.
-
----
-
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
-
----
+This project is licensed under the MIT License.
 
 ## Author
 
-**rd6hckr** — [GitHub](https://github.com/rd6hckr)
+rd6hckr — [GitHub](https://github.com/rd6hckr)
