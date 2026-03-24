@@ -31,23 +31,28 @@ data-platform-architecture/
 │
 ├── datasets/               # Source CSV files (not tracked in git)
 ├── docs/                   # Architecture diagrams and technical documentation
+├── docker-compose.yml      # SQL Server 2022 container setup
+├── .env.example            # Environment variables template
 ├── scripts/                # DDL and stored procedures per layer
 │   ├── init_database.sql   # Database and schema creation
 │   ├── bronze_ddl.sql      # Bronze layer table definitions
-│   └── bronze_load.sql     # Bronze layer load procedure
+│   ├── bronze_load.sql     # Bronze layer load procedure
+│   └── silver/             # Silver layer scripts
 ├── tests/                  # Validation queries
 └── LICENSE                 # MIT License
 ```
 
 ## Prerequisites
 
-- SQL Server 2022 (via Docker)
+- Docker
 - VS Code + SQL Server extension
 
 ## Getting Started
 ```bash
 git clone https://github.com/rd6hckr/data-platform-architecture.git
 cd data-platform-architecture
+cp .env.example .env        # set your SA_PASSWORD
+docker compose up -d        # start SQL Server
 ```
 
 1. Run `scripts/init_database.sql` — creates the `DataWarehouse` database and schemas
